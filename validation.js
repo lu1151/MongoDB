@@ -32,7 +32,10 @@ const blog = new mongoose.Schema({
   },
   category: {
     type: String,
-    enum: ["html", "css", "js", "node"],
+    enum: {
+      values: ["html", "css", "js", "node"],
+      message: "Can only be html, css, js or nodejs",
+    },
   },
   author: {
     type: String,
@@ -40,7 +43,7 @@ const blog = new mongoose.Schema({
       validator: (v) => {
         return v && v.length > 4;
       },
-      message: "It's not right.",
+      message: "Must be more than 4 characters.",
     },
   },
 });
@@ -50,6 +53,13 @@ const Post = mongoose.model("Post", blog);
 Post.create({
   title: "xxx",
   age: 20,
-  category: "css",
+  category: "cssx",
   author: "566",
-}).then((res) => console.log(res));
+})
+  .then((res) => console.log(res))
+  .catch((error) => {
+    const err = error.errors;
+    for (let k in err) {
+      console.log(err[k]["message"]);
+    }
+  });
